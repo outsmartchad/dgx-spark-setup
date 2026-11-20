@@ -16,3 +16,13 @@ __pycache__/
 models/
 weights/
 gateway-media/
+.netrc
+_netrc
+*.p12
+*.pfx
+credentials*.json
+tokens*.json
+telegram-profile/
+hf/
+*.safetensors
+*.gguf
