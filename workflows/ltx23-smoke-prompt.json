@@ -1,0 +1,199 @@
+{
+  "1": {
+    "class_type": "CheckpointLoaderSimple",
+    "inputs": {
+      "ckpt_name": "ltx-2.3-22b-distilled-fp8.safetensors"
+    }
+  },
+  "2": {
+    "class_type": "LTXAVTextEncoderLoader",
+    "inputs": {
+      "text_encoder": "gemma_3_12B_it_fp4_mixed.safetensors",
+      "ckpt_name": "ltx-2.3-22b-distilled-fp8.safetensors",
+      "device": "default"
+    }
+  },
+  "3": {
+    "class_type": "CLIPTextEncode",
+    "inputs": {
+      "clip": [
+        "2",
+        0
+      ],
+      "text": "A green tennis ball rolls across a plain wooden tabletop."
+    }
+  },
+  "4": {
+    "class_type": "CLIPTextEncode",
+    "inputs": {
+      "clip": [
+        "2",
+        0
+      ],
+      "text": "A green tennis ball rolls across a plain wooden tabletop."
+    }
+  },
+  "5": {
+    "class_type": "LTXVConditioning",
+    "inputs": {
+      "positive": [
+        "3",
+        0
+      ],
+      "negative": [
+        "4",
+        0
+      ],
+      "frame_rate": 24
+    }
+  },
+  "6": {
+    "class_type": "EmptyLTXVLatentVideo",
+    "inputs": {
+      "width": 384,
+      "height": 256,
+      "length": 121,
+      "batch_size": 1
+    }
+  },
+  "7": {
+    "class_type": "LTXVAudioVAELoader",
+    "inputs": {
+      "ckpt_name": "ltx-2.3-22b-distilled-fp8.safetensors"
+    }
+  },
+  "8": {
+    "class_type": "LTXVEmptyLatentAudio",
+    "inputs": {
+      "frames_number": 121,
+      "frame_rate": 24,
+      "batch_size": 1,
+      "audio_vae": [
+        "7",
+        0
+      ]
+    }
+  },
+  "9": {
+    "class_type": "LTXVConcatAVLatent",
+    "inputs": {
+      "video_latent": [
+        "6",
+        0
+      ],
+      "audio_latent": [
+        "8",
+        0
+      ]
+    }
+  },
+  "10": {
+    "class_type": "KSamplerSelect",
+    "inputs": {
+      "sampler_name": "euler"
+    }
+  },
+  "11": {
+    "class_type": "ManualSigmas",
+    "inputs": {
+      "sigmas": "1.0, 0.99375, 0.9875, 0.98125, 0.975, 0.909375, 0.725, 0.421875, 0.0"
+    }
+  },
+  "12": {
+    "class_type": "SamplerCustom",
+    "inputs": {
+      "model": [
+        "1",
+        0
+      ],
+      "add_noise": true,
+      "noise_seed": 42,
+      "cfg": 1.0,
+      "positive": [
+        "5",
+        0
+      ],
+      "negative": [
+        "5",
+        1
+      ],
+      "sampler": [
+        "10",
+        0
+      ],
+      "sigmas": [
+        "11",
+        0
+      ],
+      "latent_image": [
+        "9",
+        0
+      ]
+    }
+  },
+  "13": {
+    "class_type": "LTXVSeparateAVLatent",
+    "inputs": {
+      "av_latent": [
+        "12",
+        0
+      ]
+    }
+  },
+  "14": {
+    "class_type": "VAEDecodeTiled",
+    "inputs": {
+      "samples": [
+        "13",
+        0
+      ],
+      "vae": [
+        "1",
+        2
+      ],
+      "tile_size": 256,
+      "overlap": 32,
+      "temporal_size": 32,
+      "temporal_overlap": 8
+    }
+  },
+  "15": {
+    "class_type": "LTXVAudioVAEDecode",
+    "inputs": {
+      "samples": [
+        "13",
+        1
+      ],
+      "audio_vae": [
+        "7",
+        0
+      ]
+    }
+  },
+  "16": {
+    "class_type": "CreateVideo",
+    "inputs": {
+      "images": [
+        "14",
+        0
+      ],
+      "audio": [
+        "15",
+        0
+      ],
+      "fps": 24
+    }
+  },
+  "17": {
+    "class_type": "SaveVideo",
+    "inputs": {
+      "video": [
+        "16",
+        0
+      ],
+      "filename_prefix": "spark-ltx23-smoke",
+      "format": "mp4",
+      "codec": "h264"
+    }
+  }
+}

@@ -1,0 +1,43 @@
+model:
+  provider: custom
+  default: Qwen3.8-Flash-Next
+  base_url: http://127.0.0.1:18889/v1
+  context_length: 262144
+  max_tokens: 4096
+agent:
+  max_turns: 8
+  image_input_mode: native
+skills:
+  write_approval: true
+  guard_agent_created: true
+web:
+  search_backend: brave-free
+  keyless_fallback: false
+  keyless_rescue: false
+platform_toolsets:
+  telegram: [search, memory, skills, terminal, spark_media, tts, video]
+terminal:
+  backend: local
+voice:
+  auto_tts: true
+  auto_tts_mode: voice_only
+plugins:
+  enabled: [spark-media]
+platforms:
+  telegram:
+    extra:
+      drop_pending_on_cold_boot: false
+display:
+  show_reasoning: false
+  tool_progress: all
+  tool_progress_grouping: accumulate
+  platforms:
+    telegram:
+      streaming: true
+      tool_progress: all
+      show_reasoning: false
+streaming:
+  enabled: true
+  transport: edit
+  edit_interval: 0.4
+  buffer_threshold: 25

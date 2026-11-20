@@ -1,0 +1,15 @@
+[Unit]
+Description=Native Hermes Telegram gateway for the DGX Spark
+
+[Service]
+Type=simple
+WorkingDirectory=%h/.local/share/spark-telegram-hermes/telegram-profile/workspace
+ExecStart=/usr/bin/env -i PATH=/usr/bin:/bin PYTHONUTF8=1 HOME=%h/.local/share/spark-telegram-hermes/telegram-profile/home HERMES_HOME=%h/.local/share/spark-telegram-hermes/telegram-profile %h/.local/share/spark-telegram-hermes/source/.venv/bin/hermes gateway run
+Restart=on-failure
+RestartSec=5
+TimeoutStopSec=30
+UMask=0077
+NoNewPrivileges=true
+
+[Install]
+WantedBy=default.target

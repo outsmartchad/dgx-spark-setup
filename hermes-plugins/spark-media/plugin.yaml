@@ -1,0 +1,8 @@
+name: spark-media
+version: "1.0.0"
+description: Local photo fallback, textured and geometry GLBs, and video for the private Spark chat.
+provides_tools:
+  - inspect_spark_photo
+  - create_textured_glb
+  - create_geometry_glb
+  - generate_spark_video
